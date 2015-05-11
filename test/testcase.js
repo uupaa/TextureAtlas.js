@@ -149,13 +149,14 @@ function testTextureAtlas_addToGroup(test, pass, miss) {
             group = "tree";
         }
         //global.atlas.add([ { source: image, id: image.src, rect: { x: 0, y: 0, w: 32, h: 32 } } ], group, 2);
-        global.atlas.add([ { source: image, id: image.src } ], group, 2);
+        global.atlas.add([ { source: image, id: image.src } ], group, 0);
     });
 
     function onimageloaded(images) {
         global.atlas.updateCache();
 
-//        setTimeout(function() {
+        var offset = 0;
+        function a() {
 
             var ctx = global.canvas.getContext("2d");
 
@@ -164,13 +165,15 @@ function testTextureAtlas_addToGroup(test, pass, miss) {
                     var xy = y * 8 + x;
                     var img = images[(xy % images.length)];
 
-                    global.atlas.draw(img.src, ctx, x * 64, y * 64);
+                    global.atlas.draw(img.src, ctx, x * 64, y * 64 + offset);
 
 
                 }
             }
+        }
 
-//        }, 1000);
+        setTimeout(a, 2000);
+        setTimeout(function() { offset+= 500; a(); }, 5000);
 
         test.done(pass());
     }
