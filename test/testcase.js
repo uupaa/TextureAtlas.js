@@ -19,9 +19,12 @@ var test = new Test("TextureAtlas", {
 
 if (_runOnBrowser || _runOnNodeWebKit) {
     test.add([
-        testImageLoad,
-        testRemove,
-        testRandomAdd,
+/*
+        testTextureAtlas_imageLoader,
+        testTextureAtlas_remove,
+        testTextureAtlas_randomAdd,
+ */
+        testTextureAtlas_addToGroup,
     ]);
 } else if (_runOnWorker) {
     //test.add([]);
@@ -66,7 +69,7 @@ TextureAtlas["VERBOSE_VERBOSE"] = true;
 
 global.images = [];
 global.random = new Random();
-global.sprite = new TextureAtlas();
+global.atlas  = new TextureAtlas({ useCache: true });
 global.canvas = document.createElement("canvas");
 global.canvas.width = 1200;
 global.canvas.height = 1200;
@@ -75,47 +78,45 @@ document.body.appendChild(global.canvas);
 
 
 
-function testImageLoad(test, pass, miss) {
+function testTextureAtlas_imageLoader(test, pass, miss) {
     TextureAtlas.imageLoader(imageList, function(images) {
         global.images = images;
         onimageloaded(images);
     }, function(error) {
         test.done(miss());
         //throw error;
-    }, function(image) {
+    }, function(image, index) {
         console.log("image loaded: " + image.src);
-        global.sprite.add(image.src, image);
-        global.sprite.dump();
+        global.atlas.add([ [image] ]);
+      //global.atlas.add([image.src, image], "oreore", 0);
+      //global.atlas.add([image.src, image], "oreore", 0);
+        global.atlas.dump();
     });
 
     function onimageloaded(images) {
         var ctx = global.canvas.getContext("2d");
 
         for (var i = 0, iz = images.length; i < iz; ++i) {
-            global.sprite.draw(images[i].src, ctx, i * 32, i * 32);
+            global.atlas.draw(images[i].src, ctx, i * 32, i * 32);
         }
 
         test.done(pass());
     }
 }
 
-function testRemove(test, pass, miss) {
+function testTextureAtlas_remove(test, pass, miss) {
 
-    var keys = global.sprite.keys();
+    global.atlas.remove( global.atlas.keys() );
+    global.atlas.dump();
 
-    keys.forEach(function(key) {
-        global.sprite.remove(key);
-    });
-    global.sprite.dump();
-
-    if (global.sprite.keys().length === 0) {
+    if (global.atlas.keys().length === 0) {
         test.done(pass());
     } else {
         test.done(miss());
     }
 }
 
-function testRandomAdd(test, pass, miss) {
+function testTextureAtlas_randomAdd(test, pass, miss) {
     global.images.sort(function(a, b) {
         var r = global.random.next() % 2;
 
@@ -124,12 +125,58 @@ function testRandomAdd(test, pass, miss) {
         }
         return 0;
     }).forEach(function(image) {
-        global.sprite.add(image.src, image);
+        global.atlas.add([[image]]);
     });
-    global.sprite.dump();
+    global.atlas.dump();
 
     test.done(pass());
 }
+
+function testTextureAtlas_addToGroup(test, pass, miss) {
+    TextureAtlas.imageLoader(imageList, function(images) {
+        global.images = images;
+        onimageloaded(images);
+    }, function(error) {
+        test.done(miss());
+        //throw error;
+    }, function(image, index) {
+        console.log("image loaded: " + image.src);
+
+        // add to group
+        //global.atlas.add([ { source: image, id: index, rect: { x: 0, y: 0, w: 32, h: 32 } } ], "mygroup", 0);
+        var group = "";
+        if (/tree/.test(image.src)) {
+            group = "tree";
+        }
+        //global.atlas.add([ { source: image, id: image.src, rect: { x: 0, y: 0, w: 32, h: 32 } } ], group, 2);
+        global.atlas.add([ { source: image, id: image.src } ], group, 2);
+    });
+
+    function onimageloaded(images) {
+        global.atlas.updateCache();
+
+//        setTimeout(function() {
+
+            var ctx = global.canvas.getContext("2d");
+
+            for (var y = 0; y < 8; ++y) {
+                for (var x = 0; x < 8; ++x) {
+                    var xy = y * 8 + x;
+                    var img = images[(xy % images.length)];
+
+                    global.atlas.draw(img.src, ctx, x * 64, y * 64);
+
+
+                }
+            }
+
+//        }, 1000);
+
+        test.done(pass());
+    }
+}
+
+
 
 return test.run().clone();
 
