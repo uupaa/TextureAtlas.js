@@ -36,6 +36,7 @@ if (_runOnBrowser || _runOnNodeWebKit) {
 var imageList = [
 /*
         "../node_modules/uupaa.testresource.js/assets/png/codec-test/tree.png",
+ */
 
         "../node_modules/uupaa.testresource.js/assets/png/animation/APNG-Fadeout.png",
         "../node_modules/uupaa.testresource.js/assets/png/animation/APNG-from-GIF-LostWorld.png",
@@ -47,6 +48,7 @@ var imageList = [
         "../node_modules/uupaa.testresource.js/assets/png/animation/Gold.png",
         "../node_modules/uupaa.testresource.js/assets/png/animation/o_sample.png",
 
+/*
         "../node_modules/uupaa.testresource.js/assets/png/codec-test/tree.png",
         "../node_modules/uupaa.testresource.js/assets/png/codec-test/tree-copy1.png",
         "../node_modules/uupaa.testresource.js/assets/png/codec-test/tree-copy2.png",
@@ -71,7 +73,8 @@ TextureAtlas["VERBOSE_VERBOSE"] = true;
 
 global.images = [];
 global.random = new Random();
-global.atlas  = new TextureAtlas({ useCache: true });
+//global.atlas  = new TextureAtlas({ useCache: true });
+global.atlas  = new TextureAtlas({ useCache: /Chrome/.test(navigator.userAgent) ? true : false });
 global.canvas = document.createElement("canvas");
 global.canvas.width = 1200;
 global.canvas.height = 1200;
@@ -151,11 +154,11 @@ function testTextureAtlas_addToGroup(test, pass, miss) {
             group = "tree";
         }
         //global.atlas.add([ { source: image, id: image.src, rect: { x: 0, y: 0, w: 32, h: 32 } } ], group, 2);
-        global.atlas.add([ { source: image, id: image.src } ], group, 0);
+        global.atlas.add([ { source: image, id: image.src } ], group, 2);
     });
 
     function onimageloaded(images) {
-        global.atlas.updateCache();
+//        global.atlas.updateCache();
 
         var offset = 0;
         function a() {
