@@ -92,9 +92,7 @@ function testTextureAtlas_imageLoader(test, pass, miss) {
         //throw error;
     }, function(image, index) {
         console.log("image loaded: " + image.src);
-        global.atlas.add([ [image] ]);
-      //global.atlas.add([image.src, image], "oreore", 0);
-      //global.atlas.add([image.src, image], "oreore", 0);
+        global.atlas.add(image, image.src);
         global.atlas.dump();
     });
 
@@ -130,7 +128,7 @@ function testTextureAtlas_randomAdd(test, pass, miss) {
         }
         return 0;
     }).forEach(function(image) {
-        global.atlas.add([[image]]);
+        global.atlas.add(image, image.src);
     });
     global.atlas.dump();
 
@@ -154,11 +152,14 @@ function testTextureAtlas_addToGroup(test, pass, miss) {
             group = "tree";
         }
         //global.atlas.add([ { source: image, id: image.src, rect: { x: 0, y: 0, w: 32, h: 32 } } ], group, 2);
-        global.atlas.add([ { source: image, id: image.src } ], group, 2);
+        //global.atlas.add([ { source: image, id: image.src } ], group, 2);
+        global.atlas.add(image, image.src, null, group, 2);
     });
 
     function onimageloaded(images) {
-//        global.atlas.updateCache();
+        if (global.atlas.dirty) {
+            global.atlas.updateCache();
+        }
 
         var offset = 0;
         function a() {
