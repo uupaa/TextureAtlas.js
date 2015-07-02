@@ -1,6 +1,7 @@
 var ModuleTestTextureAtlas = (function(global) {
 
 global["BENCHMARK"] = false;
+var TextureAtlas = global["WebModule"]["TextureAtlas"];
 
 var test = new Test("TextureAtlas", {
         disable:    false, // disable all tests.
@@ -78,7 +79,7 @@ TextureAtlas["VERBOSE"] = true;
 TextureAtlas["VERBOSE_VERBOSE"] = true;
 
 global.images = [];
-global.random = new Random();
+global.random = new WebModule.Random();
 //global.atlas  = new TextureAtlas({ useCache: true });
 global.atlas  = new TextureAtlas({ useCache: /Chrome/.test(navigator.userAgent) ? true : false });
 global.canvas = document.createElement("canvas");

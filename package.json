@@ -1,6 +1,6 @@
 {
   "name": "uupaa.textureatlas.js",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Create texture atlas",
   "url": "https://github.com/uupaa/TextureAtlas.js",
   "keywords": ["TextureAtlas", "uupaa", "WebModule", "Unstable"],
@@ -12,7 +12,7 @@
     "sync": "node ../WebModule/run/sync.js; npm update; node ../WebModule/run/page.js",
     "min": "node ../WebModule/run/minify.js --verbose --strict --keep --pretty",
     "build": "node ../WebModule/run/minify.js --verbose --strict --keep --release",
-    "watch": "node ../WebModule/run/watch.js --verbose --run hint",
+    "watch": "node ../WebModule/run/watch.js --verbose --run lint",
     "page": "node ../WebModule/run/page.js --verbose",
     "test": "npm run min; npm run node; npm run browser",
     "node": "NODE_ENV=production NODE_PATH=lib node --harmony test/node.js",
@@ -25,7 +25,9 @@
     "patch": "node ../WebModule/run/patch.js",
     "setup": "node ../WebModule/run/setup.js",
     "start": "cd ../; Python -m SimpleHTTPServer 8000 &",
-    "stop": "killall -- Python -m SimpleHTTPServer 8000; exit 0"
+    "stop": "killall -- Python -m SimpleHTTPServer 8000; exit 0",
+    "wiki": "node ../WebModule/run/wiki.js",
+    "lint": "eslint lib/*.js"
   },
   "webmodule": {
     "develop": false,
@@ -39,9 +41,7 @@
       "output": "release/TextureAtlas.nw.min.js"
     }
   },
-  "dependencies": {
-    "uupaa.hash.js": ""
-  },
+  "dependencies": {},
   "devDependencies": {
     "uupaa.uri.js": "",
     "uupaa.task.js": "",
